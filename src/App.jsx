@@ -55,14 +55,109 @@ function App() {
     setMessages(newMessages)
     setInputValue("")
     setSuggestions([])
-
+ const generateStructuredResponse = (userMessage) => {
+    // Sample structured response based on user input
+    if (userMessage.toLowerCase().includes("property") || userMessage.toLowerCase().includes("project")) {
+      return {
+        title: "🏢 Latest Emaar Projects in Downtown Dubai",
+        content: [
+          {
+            number: "1",
+            title: "St. Regis The Residences",
+            details: [
+              "Type: 1 to 3-bedroom luxury apartments",
+              "Starting Price: AED 2.6 million",
+              "Payment Plan: 10/60/30",
+              "Highlights: Situated in the Burj Khalifa area, offering premium amenities and services associated with the St. Regis brand.",
+            ],
+          },
+          {
+            number: "2",
+            title: "Burj Crown",
+            details: [
+              "Type: 1 to 3-bedroom apartments",
+              "Starting Price: AED 2 million",
+              "Payment Plan: 10/60/10/20",
+              "Highlights: Located near the Dubai Opera, providing residents with vibrant cultural experiences and proximity to major attractions. Metropolitan Premium Properties",
+            ],
+          },
+          {
+            number: "3",
+            title: "The Address Residences Dubai Opera",
+            details: [
+              "Type: 1 to 3-bedroom serviced apartments",
+              "Starting Price: AED 3 million",
+              "Payment Plan: 15/45/20/20",
+            ],
+          },
+        ],
+      }
+    } else if (userMessage.toLowerCase().includes("technology") || userMessage.toLowerCase().includes("trends")) {
+      return {
+        title: "💻 Latest EMAAR IT Technology Trends",
+        content: [
+          {
+            number: "1",
+            title: "Smart Home Integration",
+            details: [
+              "IoT-enabled apartments with voice control",
+              "Automated lighting and climate systems",
+              "Smart security and access control",
+              "Energy management systems",
+            ],
+          },
+          {
+            number: "2",
+            title: "Virtual Reality Tours",
+            details: [
+              "360-degree property viewing experience",
+              "Virtual staging and customization",
+              "Remote property consultations",
+              "Interactive floor plan exploration",
+            ],
+          },
+          {
+            number: "3",
+            title: "Blockchain & Digital Payments",
+            details: [
+              "Cryptocurrency payment options",
+              "Digital property ownership records",
+              "Smart contracts for transactions",
+              "Transparent investment tracking",
+            ],
+          },
+        ],
+      }
+    } else {
+      return {
+        title: "ℹ️ EMAAR Information",
+        content: [
+          {
+            number: "1",
+            title: "About EMAAR",
+            details: [
+              "Leading real estate developer in Dubai",
+              "Creator of iconic landmarks like Burj Khalifa",
+              "Diverse portfolio of residential and commercial projects",
+              "Committed to innovation and excellence",
+            ],
+          },
+        ],
+      }
+    }
+  }
     // Simulate AI response after a short delay
     setTimeout(() => {
+      const structuredResponse = generateStructuredResponse(inputValue)
       setMessages([
         ...newMessages,
         {
-          text: `This is a response to: "${inputValue}"`,
+          text: inputValue,
           isUser: false,
+          time: currentTime,
+          date: currentDate,
+          structuredContent: structuredResponse,
+          id: Date.now() + 1,
         },
       ])
     }, 1000)
@@ -172,14 +267,55 @@ function App() {
             {/* Chat Area */}
             <div className="flex-1 overflow-y-auto p-4 flex flex-col">
               <div className="flex-1 space-y-4">
+                 {/* Date header */}
+                {messages.length > 0 && (
+                  <div className="text-center text-sm text-gray-500 py-2">Today, {messages[0]?.time}</div>
+                )}
+
                 {messages.map((message, index) => (
-                  <div
-                    key={index}
-                    className={`p-4 rounded-lg max-w-3xl ${
-                      message.isUser ? "bg-purple-100 ml-auto" : "bg-white border border-gray-200"
-                    }`}
-                  >
-                    {message.text}
+                  <div key={message.id} className="space-y-4">
+                    {message.isUser ? (
+                      // User message
+                      <div className="flex justify-end">
+                        <div className="max-w-lg">
+                          <div className="flex items-center justify-end space-x-2 mb-2">
+                            <span className="text-sm font-semibold">Lama Aladham</span>
+                            <span className="text-xs text-gray-500">{message.time}</span>
+                          </div>
+                          <div className="bg-purple-100 p-4 rounded-lg">
+                            <p className="text-gray-800">{message.text}</p>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      // AI response with structured content
+                      <div className="max-w-2xl">
+                        {message.structuredContent && (
+                          <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                            <h3 className="text-xl font-semibold mb-4 text-gray-800">
+                              {message.structuredContent.title}
+                            </h3>
+
+                            <div className="space-y-6">
+                              {message.structuredContent.content.map((item, itemIndex) => (
+                                <div key={itemIndex} className="space-y-2">
+                                  <h4 className="font-semibold text-gray-800">
+                                    {item.number}. {item.title}
+                                  </h4>
+                                  <ul className="space-y-1 ml-4">
+                                    {item.details.map((detail, detailIndex) => (
+                                      <li key={detailIndex} className="text-gray-600 text-sm leading-relaxed">
+                                        • {detail}
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 ))}
                 <div ref={messagesEndRef} />
