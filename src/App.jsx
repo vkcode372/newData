@@ -45,16 +45,6 @@ function App() {
     setSuggestions([])
     inputRef.current.focus()
   }
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    if (inputValue.trim() === "") return
-
-    // Add user message
-    const newMessages = [...messages, { text: inputValue, isUser: true }]
-    setMessages(newMessages)
-    setInputValue("")
-    setSuggestions([])
  const generateStructuredResponse = (userMessage) => {
     // Sample structured response based on user input
     if (userMessage.toLowerCase().includes("property") || userMessage.toLowerCase().includes("project")) {
@@ -146,6 +136,28 @@ function App() {
       }
     }
   }
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    if (inputValue.trim() === "") return
+
+    const currentTime = getCurrentTime()
+    const currentDate = getCurrentDate()
+
+    // Add user message
+    const newMessages = [
+      ...messages,
+      {
+        text: inputValue,
+        isUser: true,
+        time: currentTime,
+        date: currentDate,
+        id: Date.now(),
+      },
+    ]
+    setMessages(newMessages)
+    setInputValue("")
+    setSuggestions([])
+
     // Simulate AI response after a short delay
     setTimeout(() => {
       const structuredResponse = generateStructuredResponse(inputValue)
