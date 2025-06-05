@@ -277,7 +277,7 @@ function App() {
           // Chat view with messages and bottom input
           <>
             {/* Chat Area */}
-            <div className="flex-1 overflow-y-auto p-4 flex flex-col">
+            {/* <div className="flex-1 overflow-y-auto p-4 flex flex-col">
               <div className="flex-1 space-y-4">
                  {/* Date header */}
                 {messages.length > 0 && (
@@ -332,8 +332,54 @@ function App() {
                 ))}
                 <div ref={messagesEndRef} />
               </div>
-            </div>
+            </div> */}
+  <div className="w-full max-w-xl relative">
+              {suggestions.length > 0 && (
+                <div className="absolute top-full left-0 right-0 mt-2 p-2 bg-white rounded-lg shadow-lg border border-gray-200 max-h-48 overflow-y-auto z-10">
+                  {suggestions.map((suggestion, index) => (
+                    <div
+                      key={index}
+                      className="p-2 hover:bg-gray-100 rounded cursor-pointer underline decoration-purple-500 decoration-2 underline-offset-2"
+                      onClick={() => handleSuggestionClick(suggestion)}
+                    >
+                      {suggestion}
+                    </div>
+                  ))}
+                </div>
+              )}
 
+              <form onSubmit={handleSubmit} className="relative">
+                <div className="bg-white border border-gray-300 rounded-lg shadow-sm">
+                  {/* Input area at top */}
+                  <textarea
+                    ref={inputRef}
+                    value={inputValue}
+                    onChange={handleInputChange}
+                    placeholder="Ask Something..."
+                    className="w-full p-4 resize-none border-none focus:outline-none rounded-t-lg min-h-[60px] max-h-32"
+                    rows="1"
+                    onInput={(e) => {
+                      e.target.style.height = "auto"
+                      e.target.style.height = Math.min(e.target.scrollHeight, 128) + "px"
+                    }}
+                  />
+
+                  {/* Buttons at bottom */}
+                  <div className="flex justify-between items-center p-3 border-t border-gray-100">
+                    <button type="button" className="p-2 rounded-full hover:bg-gray-100">
+                      <Plus size={20} />
+                    </button>
+                    <button
+                      type="submit"
+                      className="p-2 rounded-full bg-black text-white hover:bg-gray-800 disabled:opacity-50"
+                      disabled={!inputValue.trim()}
+                    >
+                      <ChevronUp size={20} />
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
             {/* Input Area with Suggestions */}
             <div className="p-4 relative">
               {suggestions.length > 0 && (
