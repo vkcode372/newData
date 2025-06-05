@@ -229,6 +229,7 @@ function App() {
         </header>
 
         {/* Main content area with conditional layout */}
+         {/* Main content area with conditional layout */}
         {messages.length === 0 ? (
           // Empty state with centered content and input
           <div className="flex-1 flex flex-col items-center justify-center p-4">
@@ -237,14 +238,14 @@ function App() {
               <p className="text-4xl font-light text-gray-400 text-center">How can I help you today?</p>
             </div>
 
-            {/* Centered input form */}
-            <div className="w-full max-w-2xl relative">
+            {/* Centered input form - ChatGPT style */}
+            <div className="w-full max-w-xl relative">
               {suggestions.length > 0 && (
-                <div className="absolute bottom-full left-0 right-0 mb-2 p-2 bg-white rounded-lg shadow-lg border border-gray-200 max-h-48 overflow-y-auto">
+                <div className="absolute top-full left-0 right-0 mt-2 p-2 bg-white rounded-lg shadow-lg border border-gray-200 max-h-48 overflow-y-auto z-10">
                   {suggestions.map((suggestion, index) => (
                     <div
                       key={index}
-                      className="p-2 hover:bg-gray-100 rounded cursor-pointer"
+                      className="p-2 hover:bg-gray-100 rounded cursor-pointer underline decoration-purple-500 decoration-2 underline-offset-2"
                       onClick={() => handleSuggestionClick(suggestion)}
                     >
                       {suggestion}
@@ -254,21 +255,34 @@ function App() {
               )}
 
               <form onSubmit={handleSubmit} className="relative">
-                <input
-                  ref={inputRef}
-                  type="text"
-                  value={inputValue}
-                  onChange={handleInputChange}
-                  placeholder="Ask Something..."
-                  className="w-full p-4 pr-24 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                />
-                <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex space-x-1">
-                  <button type="button" className="p-2 rounded-full hover:bg-gray-100">
-                    <Plus size={20} />
-                  </button>
-                  <button type="submit" className="p-2 rounded-full bg-black text-white">
-                    <ChevronUp size={20} />
-                  </button>
+                <div className="bg-white border border-gray-300 rounded-lg shadow-sm">
+                  {/* Input area at top */}
+                  <textarea
+                    ref={inputRef}
+                    value={inputValue}
+                    onChange={handleInputChange}
+                    placeholder="Ask Something..."
+                    className="w-full p-4 resize-none border-none focus:outline-none rounded-t-lg min-h-[60px] max-h-32"
+                    rows="1"
+                    onInput={(e) => {
+                      e.target.style.height = "auto"
+                      e.target.style.height = Math.min(e.target.scrollHeight, 128) + "px"
+                    }}
+                  />
+
+                  {/* Buttons at bottom */}
+                  <div className="flex justify-between items-center p-3 border-t border-gray-100">
+                    <button type="button" className="p-2 rounded-full hover:bg-gray-100">
+                      <Plus size={20} />
+                    </button>
+                    <button
+                      type="submit"
+                      className="p-2 rounded-full bg-black text-white hover:bg-gray-800 disabled:opacity-50"
+                      disabled={!inputValue.trim()}
+                    >
+                      <ChevronUp size={20} />
+                    </button>
+                  </div>
                 </div>
               </form>
             </div>
@@ -277,9 +291,9 @@ function App() {
           // Chat view with messages and bottom input
           <>
             {/* Chat Area */}
-            {/* <div className="flex-1 overflow-y-auto p-4 flex flex-col">
-              <div className="flex-1 space-y-4">
-                 {/* Date header */}
+            <div className="flex-1 overflow-y-auto p-4 flex flex-col">
+              <div className="flex-1 space-y-6 max-w-3xl mx-auto">
+                {/* Date header */}
                 {messages.length > 0 && (
                   <div className="text-center text-sm text-gray-500 py-2">Today, {messages[0]?.time}</div>
                 )}
@@ -332,8 +346,10 @@ function App() {
                 ))}
                 <div ref={messagesEndRef} />
               </div>
-            </div> */}
-  <div className="w-full max-w-xl relative">
+            </div>
+
+            {/* Input Area with Suggestions - ChatGPT style */}
+            <div className="p-4 relative max-w-2xl mx-auto">
               {suggestions.length > 0 && (
                 <div className="absolute top-full left-0 right-0 mt-2 p-2 bg-white rounded-lg shadow-lg border border-gray-200 max-h-48 overflow-y-auto z-10">
                   {suggestions.map((suggestion, index) => (
@@ -377,41 +393,6 @@ function App() {
                       <ChevronUp size={20} />
                     </button>
                   </div>
-                </div>
-              </form>
-            </div>
-            {/* Input Area with Suggestions */}
-            <div className="p-4 relative">
-              {suggestions.length > 0 && (
-                <div className="absolute bottom-full left-0 right-0 mb-2 p-2 bg-white rounded-lg shadow-lg border border-gray-200 max-h-48 overflow-y-auto">
-                  {suggestions.map((suggestion, index) => (
-                    <div
-                      key={index}
-                      className="p-2 hover:bg-gray-100 rounded cursor-pointer"
-                      onClick={() => handleSuggestionClick(suggestion)}
-                    >
-                      {suggestion}
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              <form onSubmit={handleSubmit} className="relative">
-                <input
-                  ref={inputRef}
-                  type="text"
-                  value={inputValue}
-                  onChange={handleInputChange}
-                  placeholder="Ask Something..."
-                  className="w-full p-4 pr-24 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                />
-                <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex space-x-1">
-                  <button type="button" className="p-2 rounded-full hover:bg-gray-100">
-                    <Plus size={20} />
-                  </button>
-                  <button type="submit" className="p-2 rounded-full bg-black text-white">
-                    <ChevronUp size={20} />
-                  </button>
                 </div>
               </form>
             </div>
